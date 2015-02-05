@@ -28,12 +28,12 @@ class ProjectConfig
     const MAGENTO_MAP_OVERWRITE_KEY                 = 'magento-map-overwrite';
     const MAGENTO_DEPLOY_IGNORE_KEY                 = 'magento-deploy-ignore';
     const MAGENTO_FORCE_KEY                         = 'magento-force';
-    const AUTO_APPEND_GITIGNORE_KEY                 = 'auto-append-gitignore';
+    const DISABLE_GITIGNORE_MANAGE                  = 'disable-gitignore-manage';
     const PATH_MAPPINGS_TRANSLATIONS_KEY            = 'path-mapping-translations';
     const MODULE_REPOSITORY_LOCATION_KEY            = 'module-repository-location';
 
     // Default Values
-    const DEFAULT_MAGENTO_ROOT_DIR = 'root';
+    const DEFAULT_MAGENTO_ROOT_DIR = 'htdocs';
 
     /**
      * @var array
@@ -178,9 +178,9 @@ class ProjectConfig
     /**
      * @return bool
      */
-    public function hasAutoAppendGitignore()
+    public function manageGitIgnore()
     {
-        return $this->hasExtraField(self::AUTO_APPEND_GITIGNORE_KEY);
+        return !$this->hasExtraField(self::DISABLE_GITIGNORE_MANAGE);
     }
 
     /**

@@ -34,7 +34,7 @@ class ModuleManagerFactory
     {
         $installStrategyFactory = new InstallStrategyFactory($config);
 
-        if ($config->hasAutoAppendGitignore()) {
+        if ($config->manageGitIgnore()) {
             $this->addGitIgnoreListener($eventManager, $config);
         }
 

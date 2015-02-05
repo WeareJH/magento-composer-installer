@@ -43,12 +43,12 @@ class ProjectConfigTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($config->hasMagentoDeployIgnore());
     }
 
-    public function testHasAutoAppendGitignore()
+    public function testGitIgnoreManage()
     {
-        $config = new ProjectConfig(['auto-append-gitignore' => 1], []);
-        $this->assertTrue($config->hasAutoAppendGitignore());
+        $config = new ProjectConfig(['disable-gitignore-manage' => 1], []);
+        $this->assertFalse($config->manageGitIgnore());
         $config = new ProjectConfig([], []);
-        $this->assertFalse($config->hasAutoAppendGitignore());
+        $this->assertTrue($config->manageGitIgnore());
     }
 
     public function testHasPathMappingTranslations()
@@ -140,7 +140,7 @@ class ProjectConfigTest extends PHPUnit_Framework_TestCase
         $this->assertSame('htdocs', $config->getMagentoRootDir(false));
 
         $config = new ProjectConfig([], []);
-        $this->assertSame('root', $config->getMagentoRootDir(false));
+        $this->assertSame('htdocs', $config->getMagentoRootDir(false));
     }
 
     public function testGetInstalledModuleRepositoryFile()

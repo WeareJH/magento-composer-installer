@@ -26,8 +26,20 @@ class ModuleManagerFactoryTest extends PHPUnit_Framework_TestCase
         $eventManager   = $this->getMock('MagentoHackathon\Composer\Magento\Event\EventManager');
         $io             = new ConsoleIO(new ArrayInput([]), new ConsoleOutput(), new HelperSet());
 
+        //gitignore add
         $eventManager
             ->expects($this->at(0))
+            ->method('listen')
+            ->with('package-post-install', $this->isType('array'));
+
+        //git ignore 3
+        $eventManager
+            ->expects($this->at(1))
+            ->method('listen')
+            ->with('package-post-uninstall', $this->isType('array'));
+
+        $eventManager
+            ->expects($this->at(2))
             ->method('listen')
             ->with(
                 'pre-install',
@@ -35,7 +47,7 @@ class ModuleManagerFactoryTest extends PHPUnit_Framework_TestCase
             );
 
         $eventManager
-            ->expects($this->at(1))
+            ->expects($this->at(3))
             ->method('listen')
             ->with(
                 'pre-install',
@@ -57,13 +69,25 @@ class ModuleManagerFactoryTest extends PHPUnit_Framework_TestCase
             new HelperSet()
         );
 
+        //gitignore add
         $eventManager
             ->expects($this->at(0))
+            ->method('listen')
+            ->with('package-post-install', $this->isType('array'));
+
+        //git ignore 3
+        $eventManager
+            ->expects($this->at(1))
+            ->method('listen')
+            ->with('package-post-uninstall', $this->isType('array'));
+
+        $eventManager
+            ->expects($this->at(2))
             ->method('listen')
             ->with('package-pre-install', $this->isInstanceOf('Closure'));
 
         $eventManager
-            ->expects($this->at(1))
+            ->expects($this->at(3))
             ->method('listen')
             ->with(
                 'pre-install',
@@ -71,7 +95,7 @@ class ModuleManagerFactoryTest extends PHPUnit_Framework_TestCase
             );
 
         $eventManager
-            ->expects($this->at(2))
+            ->expects($this->at(4))
             ->method('listen')
             ->with(
                 'pre-install',
@@ -81,25 +105,15 @@ class ModuleManagerFactoryTest extends PHPUnit_Framework_TestCase
         $factory->make($config, $eventManager, $io);
     }
 
-    public function testGitIgnoreListenerIsAddedIfConfigPresent()
+    public function testGitIgnoreListenerIsNotAddedIfDisableGitIgnoreConfigPresent()
     {
         $factory        = new ModuleManagerFactory;
-        $config         = new ProjectConfig(['auto-append-gitignore' => true], ['vendor-dir' => 'vendor']);
+        $config         = new ProjectConfig(['disable-gitignore-manage' => true], ['vendor-dir' => 'vendor']);
         $eventManager   = $this->getMock('MagentoHackathon\Composer\Magento\Event\EventManager');
         $io             = new ConsoleIO(new ArrayInput([]), new ConsoleOutput(), new HelperSet());
 
         $eventManager
             ->expects($this->at(0))
-            ->method('listen')
-            ->with('package-post-install', $this->isType('array'));
-
-        $eventManager
-            ->expects($this->at(1))
-            ->method('listen')
-            ->with('package-post-uninstall', $this->isType('array'));
-
-        $eventManager
-            ->expects($this->at(2))
             ->method('listen')
             ->with(
                 'pre-install',
@@ -107,7 +121,7 @@ class ModuleManagerFactoryTest extends PHPUnit_Framework_TestCase
             );
 
         $eventManager
-            ->expects($this->at(3))
+            ->expects($this->at(1))
             ->method('listen')
             ->with(
                 'pre-install',
