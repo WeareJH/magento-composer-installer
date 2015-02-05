@@ -21,4 +21,5 @@ install:
 
 test_script:
   - cd C:\projects\magento-composer-installer
-  - vendor\bin\phpunit.bat tests
+  - pwd
+  - .\vendor\bin\phpunit
