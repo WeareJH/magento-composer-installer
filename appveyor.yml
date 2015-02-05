@@ -20,6 +20,6 @@ install:
   - php composer.phar install --prefer-dist --no-interaction
 
 test_script:
-  - cd C:\projects\magento-composer-installer
-  - gl
-  - .\vendor\bin\phpunit
+  - ps: cd C:\projects\magento-composer-installer
+  - ps: gl
+  - ps: .\vendor\bin\phpunit
