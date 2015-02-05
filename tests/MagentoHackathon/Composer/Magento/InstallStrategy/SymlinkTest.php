@@ -98,6 +98,7 @@ class SymlinkTest extends AbstractStrategyTest
 
         $map = new Map('source', 'source', $this->source, $this->destination);
 
+        mkdir(sprintf('%s/source', $this->source));
         symlink($map->getAbsoluteSource(), $map->getAbsoluteDestination());
 
         $fileSystem

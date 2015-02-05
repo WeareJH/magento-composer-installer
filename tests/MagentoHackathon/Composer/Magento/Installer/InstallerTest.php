@@ -49,7 +49,10 @@ class InstallerTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->projectLocation      = sprintf('%s/%s/project', realpath(sys_get_temp_dir()), $this->getName(false));
+        $this->projectLocation      = str_replace('\\', '/', $this->projectLocation);
+
         $this->moduleLocation       = sprintf('%s/%s/module', realpath(sys_get_temp_dir()), $this->getName(false));
+        $this->moduleLocation       = str_replace('\\', '/', $this->moduleLocation);
         $this->config               = new ProjectConfig(['magento-root-dir' => $this->projectLocation], []);
         $this->factory              = new InstallerFactory;
         $this->installer            = $this->factory->make($this->config, new EventManager);

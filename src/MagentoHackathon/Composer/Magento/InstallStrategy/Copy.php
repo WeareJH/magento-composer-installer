@@ -86,8 +86,8 @@ class Copy implements InstallStrategyInterface
 
             if ($item->isFile()) {
                 $resolvedMappings[] = [
-                    sprintf('%s/%s', $source, $iterator->getSubPathname()),
-                    sprintf('%s/%s', $destination, $iterator->getSubPathname()),
+                    sprintf('%s/%s', $source, str_replace('\\', '/', $iterator->getSubPathname())),
+                    sprintf('%s/%s', $destination, str_replace('\\', '/', $iterator->getSubPathname())),
                 ];
             }
         }

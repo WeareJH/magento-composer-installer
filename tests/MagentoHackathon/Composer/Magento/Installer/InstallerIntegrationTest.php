@@ -81,7 +81,13 @@ class InstallerIntegrationTest extends PHPUnit_Framework_TestCase
 
         foreach ($destinationFiles as $file) {
             $file = sprintf('%s/%s', $this->projectLocation, $file);
-            $this->assertFileExists($file);
+
+            if (!strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                //we don't run this check if windows
+                //as file_exists returns false if its a symlinked folder on windows. lolz.
+                //the is_link should be enough
+                $this->assertFileExists($file);
+            }
             $this->assertTrue(is_link($file));
         }
 

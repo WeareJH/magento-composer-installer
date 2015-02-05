@@ -46,6 +46,8 @@ abstract class AbstractStrategyTest extends PHPUnit_Framework_TestCase
         $this->fileSystem   = new FileSystem;
         $this->source       = sprintf('%s/%s/source', sys_get_temp_dir(), $this->getName(false));
         $this->destination  = sprintf('%s/%s/destination', sys_get_temp_dir(), $this->getName(false));
+        $this->source       = str_replace('\\', '/', $this->source);
+        $this->destination  = str_replace('\\', '/', $this->destination);
 
         $this->fileSystem->ensureDirectoryExists($this->source);
         $this->fileSystem->ensureDirectoryExists($this->destination);

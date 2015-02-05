@@ -18,6 +18,7 @@ class UnInstallStrategyTest extends PHPUnit_Framework_TestCase
     public function testUnInstall()
     {
         $this->testDirectory    = sprintf('%s/%s', sys_get_temp_dir(), $this->getName());
+        $this->testDirectory    = str_replace('\\', '/', $this->testDirectory);
         $rootDir                = $this->testDirectory . '/root';
         mkdir($rootDir, 0777, true);
 
@@ -52,6 +53,7 @@ class UnInstallStrategyTest extends PHPUnit_Framework_TestCase
     public function testUnInstallDoesNotRemoveOtherFiles()
     {
         $this->testDirectory    = sprintf('%s/%s', sys_get_temp_dir(), $this->getName());
+        $this->testDirectory    = str_replace('\\', '/', $this->testDirectory);
         $rootDir                = $this->testDirectory . '/root';
         mkdir($rootDir, 0777, true);
 
