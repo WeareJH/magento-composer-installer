@@ -19,7 +19,7 @@
 
     <filter>
         <whitelist>
-            <directory>./src/</directory>
+            <directory>src</directory>
             <exclude>
             </exclude>
         </whitelist>

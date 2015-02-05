@@ -5,6 +5,7 @@ namespace Jh\MagentoComposerInstallerTest\Installer;
 use Composer\Package\Package;
 use Jh\MagentoComposerInstaller\Event\EventManager;
 use Jh\MagentoComposerInstaller\Factory\InstallerFactory;
+use Jh\MagentoComposerInstaller\Installer\Installer;
 use Jh\MagentoComposerInstaller\ProjectConfig;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit_Framework_TestCase;
