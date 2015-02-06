@@ -117,6 +117,7 @@ class FileSystemTest extends PHPUnit_Framework_TestCase
     public function testCreateSymLinkSuccessfullyCreatesSymLink()
     {
         $root = sprintf('%s/%s', sys_get_temp_dir(), $this->getName());
+        $root = str_replace('\\', '/', $root);
         mkdir($root, 0777, true);
         mkdir(sprintf('%s/source', $root));
         mkdir(sprintf('%s/destination', $root));
@@ -128,8 +129,12 @@ class FileSystemTest extends PHPUnit_Framework_TestCase
         $this->fileSystem->createSymlink($file1, $link);
         $this->assertTrue(is_link($link));
 
-        $realPath = realpath(sprintf('%s/destination/%s', $root, readlink($link)));
-        $this->assertSame(realpath($file1), $realPath);
+        $actual = readlink($link);
+        if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+            $actual = realpath(sprintf('%s/destination/%s', $root, $actual));
+        }
+
+        $this->assertSame(realpath($file1), $actual);
     }
 
     public function testCreateSymLinkThrowsExceptionIfCreationFails()

@@ -75,7 +75,7 @@ final class GlobResolver
      */
     protected function processMapping(\SplFileInfo $globMatch, Map $map)
     {
-        $absolutePath = $globMatch->getPathname();
+        $absolutePath = str_replace('\\', '/', $globMatch->getPathname());
 
         //get the relative path to this file/dir - strip of the source path
         //+1 to strip leading slash

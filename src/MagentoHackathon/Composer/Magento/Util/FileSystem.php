@@ -113,14 +113,20 @@ class FileSystem extends ComposerFs
         $relativeSourcePath = $this->getRelativePath($destination, $source);
         if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
             $relativeSourcePath = str_replace('/', '\\', $relativeSourcePath);
-            $param = is_dir($source) ? '/D' : '';
-            exec(sprintf('mklink %s %s %s', $param, $destination, $relativeSourcePath), $output, $return);
+            $param = is_dir($source) ? '/d' : '';
+            exec(sprintf('mklink %s "%s" "%s"', $param, $destination, $relativeSourcePath), $output, $result);
+
+            if ($result > 0) {
+                //anything greater than 0 on Windows is a fail
+                $result = false;
+            }
+
         } else {
             $result = @symlink($relativeSourcePath, $destination);
+        }
 
-            if (false === $result) {
-                throw new \ErrorException(sprintf('An error occurred while creating symlink: %s', $relativeSourcePath));
-            }
+        if (false === $result) {
+            throw new \ErrorException(sprintf('An error occurred while creating symlink: %s', $relativeSourcePath));
         }
     }
 

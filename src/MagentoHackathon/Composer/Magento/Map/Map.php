@@ -64,7 +64,7 @@ final class Map
      */
     public function getSource()
     {
-        return trim($this->source, '\\/');
+        return trim($this->normalizePath($this->source), '/');
     }
 
     /**
@@ -72,7 +72,7 @@ final class Map
      */
     public function getDestination()
     {
-        return trim($this->destination, '\\/');
+        return trim($this->normalizePath($this->destination), '/');
     }
 
     /**
@@ -80,7 +80,7 @@ final class Map
      */
     public function getAbsoluteSource()
     {
-        return sprintf('%s/%s', rtrim($this->sourceRoot, '\\/'), $this->getSource());
+        return sprintf('%s/%s', $this->getSourceRoot(), $this->getSource());
     }
 
     /**
@@ -88,7 +88,7 @@ final class Map
      */
     public function getAbsoluteDestination()
     {
-        return sprintf('%s/%s', rtrim($this->destinationRoot, '\\/'), $this->getDestination());
+        return sprintf('%s/%s', $this->getDestinationRoot(), $this->getDestination());
     }
 
     /**
@@ -96,7 +96,7 @@ final class Map
      */
     public function getSourceRoot()
     {
-        return rtrim($this->sourceRoot, '\\/');
+        return rtrim($this->normalizePath($this->sourceRoot), '/');
     }
 
     /**
@@ -104,6 +104,15 @@ final class Map
      */
     public function getDestinationRoot()
     {
-        return rtrim($this->destinationRoot, '\\/');
+        return rtrim($this->normalizePath($this->destinationRoot), '/');
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    private function normalizePath($path)
+    {
+        return str_replace('\\', '/', $path);
     }
 }

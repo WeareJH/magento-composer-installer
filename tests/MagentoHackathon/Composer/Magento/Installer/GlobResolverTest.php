@@ -33,7 +33,7 @@ class GlobResolverTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->root = sprintf('%s/globtest', sys_get_temp_dir());
+        $this->root = str_replace('\\', '/', sprintf('%s/globtest', sys_get_temp_dir()));
         $this->fileSystem = new Filesystem;
         $this->fileSystem->remove($this->root);
         mkdir(sprintf('%s/source', $this->root), 0777, true);
