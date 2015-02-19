@@ -74,8 +74,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         $this->io               = $io;
         $this->composer         = $composer;
-        $composerConfig         = $composer->getConfig()->all();
-        $this->config           = new ProjectConfig($composer->getPackage()->getExtra(), $composerConfig['config']);
+        $extra                  = $composer->getPackage()->getExtra();
+        $config                 = isset($extra['mci']) ? $extra['mci'] : [];
+        $config['vendor-dir']   = $composer->getConfig()->get('vendor-dir');
+        $this->config           = new ProjectConfig($config);
         $this->eventManager     = new EventManager;
         $moduleManagerFactory   = new ModuleManagerFactory;
         $this->moduleManager    = $moduleManagerFactory->make($this->config, $this->eventManager, $io);

@@ -98,7 +98,7 @@ class InstallerTest extends PHPUnit_Framework_TestCase
 
         $installer = $this->getInstaller(
             [
-                'magento-deploy-ignore' => [
+                'install-ignores' => [
                     'some/package' => [
                         'app/etc/modules/SomePackage.xml'
                     ],

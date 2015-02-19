@@ -19,68 +19,110 @@ use SebastianBergmann\Exporter\Exception;
  */
 class ProjectConfig
 {
-    // Config Keys
-    const EXTRA_KEY                                 = 'extra';
-    const SORT_PRIORITY_KEY                         = 'magento-deploy-sort-priority';
-    const MAGENTO_ROOT_DIR_KEY                      = 'magento-root-dir';
-    const MAGENTO_DEPLOY_STRATEGY_KEY               = 'magento-deploystrategy';
-    const MAGENTO_DEPLOY_STRATEGY_OVERWRITE_KEY     = 'magento-deploystrategy-overwrite';
-    const MAGENTO_MAP_OVERWRITE_KEY                 = 'magento-map-overwrite';
-    const MAGENTO_DEPLOY_IGNORE_KEY                 = 'magento-deploy-ignore';
-    const MAGENTO_FORCE_KEY                         = 'magento-force';
-    const DISABLE_GITIGNORE_MANAGE                  = 'disable-gitignore-manage';
-    const PATH_MAPPINGS_TRANSLATIONS_KEY            = 'path-mapping-translations';
-    const MODULE_REPOSITORY_LOCATION_KEY            = 'module-repository-location';
-
-    // Default Values
-    const DEFAULT_MAGENTO_ROOT_DIR = 'htdocs';
 
     /**
      * @var array
      */
-    protected $extra;
+    protected $installPriorities = array();
+
+    /**
+     * @var string
+     */
+    protected $magentoRootDir = 'htdocs';
+
+    /**
+     * @var string
+     */
+    protected $installStrategy = 'symlink';
 
     /**
      * @var array
      */
-    protected $composerConfig;
+    protected $installStrategyOverwrites = array();
 
     /**
-     * @param array $extra
-     * @param array $composerConfig
+     * @var array
      */
-    public function __construct(array $extra, array $composerConfig)
-    {
-        $this->extra            = $extra;
-        $this->composerConfig   = $composerConfig;
-    }
+    protected $mapOverwrites = array();
 
     /**
-     * @param array $array
-     * @param string $key
-     * @param mixed $default
-     *
-     * @return mixed
+     * @var array
      */
-    protected function fetchVarFromConfigArray(array $array, $key, $default = null)
+    protected $installIgnores = array();
+
+    /**
+     * @var bool
+     */
+    protected $forceInstall = false;
+
+    /**
+     * @var bool
+     */
+    protected $manageGitIgnore = true;
+
+    /**
+     * @var array
+     */
+    protected $pathMappingTranslations = array();
+
+    /**
+     * @var null|string
+     */
+    protected $moduleRepositoryLocation = null;
+
+    /**
+     * @var string
+     */
+    protected $vendorDir = 'vendor';
+
+    /**
+     * @param array $config
+     */
+    public function __construct(array $config)
     {
-        $result = $default;
-        if (isset($array[$key])) {
-            $result = $array[$key];
+        if (isset($config['install-priorities']) && is_array($config['install-priorities'])) {
+            $this->installPriorities = array_change_key_case($config['install-priorities']);
         }
 
-        return $result;
-    }
+        if (isset($config['magento-root-dir']) && is_string($config['magento-root-dir'])) {
+            $this->magentoRootDir = $config['magento-root-dir'];
+        }
 
-    /**
-     * @param string $key
-     * @param mixed $default
-     *
-     * @return mixed
-     */
-    protected function fetchVarFromExtraConfig($key, $default = null)
-    {
-        return $this->fetchVarFromConfigArray($this->extra, $key, $default);
+        if (isset($config['install-strategy']) && is_string($config['install-strategy'])) {
+            $this->installStrategy = trim($config['install-strategy']);
+        }
+
+        if (isset($config['install-strategy-overwrites']) && is_array($config['install-strategy-overwrites'])) {
+            $this->installStrategyOverwrites = array_change_key_case($config['install-strategy-overwrites']);
+        }
+
+        if (isset($config['map-overwrites']) && is_array($config['map-overwrites'])) {
+            $this->mapOverwrites = array_change_key_case($config['map-overwrites']);
+        }
+
+        if (isset($config['install-ignores']) && is_array($config['install-ignores'])) {
+            $this->installIgnores = array_change_key_case($config['install-ignores']);
+        }
+
+        if (isset($config['force-install']) && is_bool($config['force-install'])) {
+            $this->forceInstall = $config['force-install'];
+        }
+
+        if (isset($config['disable-gitignore-manage']) && $config['disable-gitignore-manage']) {
+            $this->manageGitIgnore = false;
+        }
+
+        if (isset($config['path-mapping-translations']) && is_array($config['path-mapping-translations'])) {
+            $this->pathMappingTranslations = array_change_key_case($config['path-mapping-translations']);
+        }
+
+        if (isset($config['module-repository-location']) && is_string($config['module-repository-location'])) {
+            $this->moduleRepositoryLocation = trim($config['module-repository-location']);
+        }
+
+        if (isset($config['vendor-dir']) && is_string($config['vendor-dir'])) {
+            $this->vendorDir = $config['vendor-dir'];
+        }
     }
 
     /**
@@ -89,15 +131,7 @@ class ProjectConfig
      */
     public function getMagentoRootDir($realPath = true)
     {
-        $rootDir = rtrim(
-            trim(
-                $this->fetchVarFromExtraConfig(
-                    self::MAGENTO_ROOT_DIR_KEY,
-                    self::DEFAULT_MAGENTO_ROOT_DIR
-                )
-            ),
-            DIRECTORY_SEPARATOR
-        );
+        $rootDir = rtrim(trim($this->magentoRootDir), DIRECTORY_SEPARATOR);
 
         if ($realPath) {
             return realpath($rootDir);
@@ -109,70 +143,58 @@ class ProjectConfig
     /**
      * @return string
      */
-    public function getDeployStrategy()
+    public function getInstallStrategy()
     {
-        return trim((string) $this->fetchVarFromExtraConfig(self::MAGENTO_DEPLOY_STRATEGY_KEY));
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasDeployStrategy()
-    {
-        return $this->hasExtraField(self::MAGENTO_DEPLOY_STRATEGY_KEY);
+        return $this->installStrategy;
     }
 
     /**
      * @return array
      */
-    public function getDeployStrategyOverwrite()
+    public function getInstallStrategyOverwrites()
     {
-        return $this->transformArrayKeysToLowerCase(
-            $this->fetchVarFromExtraConfig(self::MAGENTO_DEPLOY_STRATEGY_OVERWRITE_KEY, [])
-        );
+        return $this->installStrategyOverwrites;
     }
 
     /**
      * @return bool
      */
-    public function hasDeployStrategyOverwrite()
+    public function hasInstallStrategyOverwrites()
     {
-        return $this->hasExtraField(self::MAGENTO_DEPLOY_STRATEGY_OVERWRITE_KEY);
+        return count($this->installStrategyOverwrites) > 0;
     }
 
     /**
      * @return array
      */
-    public function getMagentoDeployIgnore()
+    public function getInstallIgnores()
     {
-        return $this->transformArrayKeysToLowerCase(
-            $this->fetchVarFromExtraConfig(self::MAGENTO_DEPLOY_IGNORE_KEY, [])
-        );
+        return $this->installIgnores;
     }
 
     /**
      * @return bool
      */
-    public function hasMagentoDeployIgnore()
+    public function hasInstallIgnores()
     {
-        return $this->hasExtraField(self::MAGENTO_DEPLOY_IGNORE_KEY);
+        return count($this->installIgnores) > 0;
     }
 
     /**
      * @return bool
      */
-    public function getMagentoForce()
+    public function getForceInstall()
     {
-        return (bool) $this->fetchVarFromExtraConfig(self::MAGENTO_FORCE_KEY);
+        return $this->forceInstall;
     }
 
     /**
      * @param string $packagename
      * @return string
      */
-    public function getMagentoForceByPackageName($packagename)
+    public function getForceInstallByPackageName($packagename)
     {
-        return $this->getMagentoForce();
+        return $this->getForceInstall();
     }
 
     /**
@@ -180,7 +202,7 @@ class ProjectConfig
      */
     public function manageGitIgnore()
     {
-        return !$this->hasExtraField(self::DISABLE_GITIGNORE_MANAGE);
+        return $this->manageGitIgnore;
     }
 
     /**
@@ -188,7 +210,7 @@ class ProjectConfig
      */
     public function getPathMappingTranslations()
     {
-        return $this->fetchVarFromExtraConfig(self::PATH_MAPPINGS_TRANSLATIONS_KEY, []);
+        return $this->pathMappingTranslations;
     }
 
     /**
@@ -196,36 +218,15 @@ class ProjectConfig
      */
     public function hasPathMappingTranslations()
     {
-        return $this->hasExtraField(self::PATH_MAPPINGS_TRANSLATIONS_KEY);
+        return count($this->pathMappingTranslations) > 0;
     }
 
     /**
      * @return array
      */
-    public function getMagentoMapOverwrite()
+    public function getMapOverwrites()
     {
-        return $this->transformArrayKeysToLowerCase(
-            $this->fetchVarFromExtraConfig(self::MAGENTO_MAP_OVERWRITE_KEY, [])
-        );
-    }
-
-    /**
-     * @param string $key
-     * @return bool
-     */
-    protected function hasExtraField($key)
-    {
-        return !is_null($this->fetchVarFromExtraConfig($key));
-    }
-
-    /**
-     * @param array $array
-     *
-     * @return array
-     */
-    public function transformArrayKeysToLowerCase(array $array)
-    {
-        return array_change_key_case($array, CASE_LOWER);
+        return $this->mapOverwrites;
     }
 
     /**
@@ -235,7 +236,7 @@ class ProjectConfig
      */
     public function getVendorDir()
     {
-        return $this->fetchVarFromConfigArray($this->composerConfig, 'vendor-dir');
+        return $this->vendorDir;
     }
 
     /**
@@ -243,9 +244,9 @@ class ProjectConfig
      *
      * @return array
      */
-    public function getSortPriorities()
+    public function getInstallPriorities()
     {
-        return $this->fetchVarFromConfigArray($this->extra, self::SORT_PRIORITY_KEY, []);
+        return $this->installPriorities;
     }
 
     /**
@@ -253,14 +254,10 @@ class ProjectConfig
      */
     public function getModuleRepositoryLocation()
     {
-        $moduleRepoDir = $this->fetchVarFromExtraConfig(
-            self::MODULE_REPOSITORY_LOCATION_KEY,
-            $this->fetchVarFromConfigArray(
-                $this->composerConfig,
-                'vendor-dir'
-            )
-        );
+        if (null === $this->moduleRepositoryLocation) {
+            return sprintf('%s/magento-installed.json', $this->getVendorDir());
+        }
 
-        return sprintf('%s/magento-installed.json', $moduleRepoDir);
+        return sprintf('%s/magento-installed.json', $this->moduleRepositoryLocation);
     }
 }

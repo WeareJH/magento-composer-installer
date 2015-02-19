@@ -94,7 +94,7 @@ class Installer implements InstallerInterface
     public function install(PackageInterface $package, $packageSourceDirectory)
     {
         $installStrategy = $this->installStrategyFactory->make($package);
-        $force           = $this->config->getMagentoForceByPackageName($package->getName());
+        $force           = $this->config->getForceInstallByPackageName($package->getName());
 
         $mappings = $this->parser->getMappings(
             $package,

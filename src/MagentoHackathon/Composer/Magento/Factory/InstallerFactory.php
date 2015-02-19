@@ -28,7 +28,7 @@ class InstallerFactory
         $installStrategyFactory = new InstallStrategyFactory($config);
         $fileSystem             = new FileSystem;
         $globResolver           = new GlobResolver;
-        $targetFilter           = new TargetFilter($config->getMagentoDeployIgnore());
+        $targetFilter           = new TargetFilter($config->getInstallIgnores());
         $parser                 = new Parser(new ParserFactory($config));
 
         return new Installer(

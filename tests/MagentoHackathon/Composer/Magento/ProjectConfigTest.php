@@ -10,145 +10,130 @@ use PHPUnit_Framework_TestCase;
  */
 class ProjectConfigTest extends PHPUnit_Framework_TestCase
 {
-    public function testTransformArrayKeysToLowerCase()
+    public function testHasInstallStrategyOverwrite()
     {
-        $config = new ProjectConfig([], []);
-
-        $array = ['ONE' => 1, 'TWO' => 2, 'THREE' => 3];
-        $expected = ['one' => 1, 'two' => 2, 'three' => 3];
-        $this->assertSame($expected, $config->transformArrayKeysToLowerCase($array));
+        $config = new ProjectConfig(['install-strategy-overwrites' => ['some/module']]);
+        $this->assertTrue($config->hasInstallStrategyOverwrites());
+        $config = new ProjectConfig([]);
+        $this->assertFalse($config->hasInstallStrategyOverwrites());
     }
 
-    public function testHasDeployStrategy()
+    public function testHasInstallIgnores()
     {
-        $config = new ProjectConfig(['magento-deploystrategy' => 1], []);
-        $this->assertTrue($config->hasDeployStrategy());
-        $config = new ProjectConfig([], []);
-        $this->assertFalse($config->hasDeployStrategy());
-    }
-
-    public function testHasDeployStrategyOverwrite()
-    {
-        $config = new ProjectConfig(['magento-deploystrategy-overwrite' => 1], []);
-        $this->assertTrue($config->hasDeployStrategyOverwrite());
-        $config = new ProjectConfig([], []);
-        $this->assertFalse($config->hasDeployStrategyOverwrite());
-    }
-
-    public function testHasMagentoDeployIgnore()
-    {
-        $config = new ProjectConfig(['magento-deploy-ignore' => 1], []);
-        $this->assertTrue($config->hasMagentoDeployIgnore());
-        $config = new ProjectConfig([], []);
-        $this->assertFalse($config->hasMagentoDeployIgnore());
+        $config = new ProjectConfig(['install-ignores' => ['some/module']]);
+        $this->assertTrue($config->hasInstallIgnores());
+        $config = new ProjectConfig([]);
+        $this->assertFalse($config->hasInstallIgnores());
     }
 
     public function testGitIgnoreManage()
     {
-        $config = new ProjectConfig(['disable-gitignore-manage' => 1], []);
+        $config = new ProjectConfig(['disable-gitignore-manage' => true]);
         $this->assertFalse($config->manageGitIgnore());
-        $config = new ProjectConfig([], []);
+        $config = new ProjectConfig([]);
+        $this->assertTrue($config->manageGitIgnore());
+        $config = new ProjectConfig(['disable-gitignore-manage' => false]);
         $this->assertTrue($config->manageGitIgnore());
     }
 
     public function testHasPathMappingTranslations()
     {
-        $config = new ProjectConfig(['path-mapping-translations' => 1], []);
+        $config = new ProjectConfig(['path-mapping-translations' => ['some/module']]);
         $this->assertTrue($config->hasPathMappingTranslations());
-        $config = new ProjectConfig([], []);
+        $config = new ProjectConfig([]);
         $this->assertFalse($config->hasPathMappingTranslations());
     }
 
-    public function testGetSortPriorities()
+    public function testGetInstallPriorities()
     {
-        $config = new ProjectConfig(['magento-deploy-sort-priority' => [1]], []);
-        $this->assertSame([1], $config->getSortPriorities());
-        $config = new ProjectConfig([], []);
-        $this->assertSame([], $config->getSortPriorities());
+        $config = new ProjectConfig(['install-priorities' => [1]]);
+        $this->assertSame([1], $config->getInstallPriorities());
+        $config = new ProjectConfig([]);
+        $this->assertSame([], $config->getInstallPriorities());
     }
 
     public function testGetVendorDir()
     {
-        $config = new ProjectConfig([], ['vendor-dir' => 'vendor']);
+        $config = new ProjectConfig(['vendor-dir' => 'vendor']);
         $this->assertSame('vendor', $config->getVendorDir());
-        $config = new ProjectConfig([], []);
-        $this->assertNull($config->getVendorDir());
+        $config = new ProjectConfig([]);
+        $this->assertSame('vendor', $config->getVendorDir());
     }
 
-    public function testGetMagentoMapOverwrite()
+    public function testGetMapOverwrites()
     {
-        $config = new ProjectConfig(['magento-map-overwrite' => [1]], []);
-        $this->assertSame([1], $config->getMagentoMapOverwrite());
-        $config = new ProjectConfig([], []);
-        $this->assertSame([], $config->getMagentoMapOverwrite());
+        $config = new ProjectConfig(['map-overwrites' => [1]]);
+        $this->assertSame([1], $config->getMapOverwrites());
+        $config = new ProjectConfig([]);
+        $this->assertSame([], $config->getMapOverwrites());
     }
 
-    public function testGetDeployStrategyOverwrite()
+    public function testGetInstallStrategyOverwrites()
     {
-        $config = new ProjectConfig(['magento-deploystrategy-overwrite' => [1]], []);
-        $this->assertSame([1], $config->getDeployStrategyOverwrite());
-        $config = new ProjectConfig([], []);
-        $this->assertSame([], $config->getDeployStrategyOverwrite());
+        $config = new ProjectConfig(['install-strategy-overwrites' => [1]]);
+        $this->assertSame([1], $config->getInstallStrategyOverwrites());
+        $config = new ProjectConfig([]);
+        $this->assertSame([], $config->getInstallStrategyOverwrites());
     }
 
     public function testGetPathMappingTranslations()
     {
-        $config = new ProjectConfig(['path-mapping-translations' => [1]], []);
+        $config = new ProjectConfig(['path-mapping-translations' => [1]]);
         $this->assertSame([1], $config->getPathMappingTranslations());
-        $config = new ProjectConfig([], []);
+        $config = new ProjectConfig([]);
         $this->assertSame([], $config->getPathMappingTranslations());
     }
 
-    public function testGetForce()
+    public function testGetForceInstall()
     {
-        $config = new ProjectConfig(['magento-force' => true], []);
-        $this->assertTrue($config->getMagentoForce());
-        $this->assertTrue($config->getMagentoForceByPackageName('some/package'));
+        $config = new ProjectConfig(['force-install' => true]);
+        $this->assertTrue($config->getForceInstall());
+        $this->assertTrue($config->getForceInstallByPackageName('some/package'));
 
-        $config = new ProjectConfig(['magento-force' => false], []);
-        $this->assertFalse($config->getMagentoForce());
-        $this->assertFalse($config->getMagentoForceByPackageName('some/package'));
+        $config = new ProjectConfig(['force-install' => false]);
+        $this->assertFalse($config->getForceInstall());
+        $this->assertFalse($config->getForceInstallByPackageName('some/package'));
 
-        $config = new ProjectConfig(['magento-force' => ['lol']], []);
-        $this->assertTrue($config->getMagentoForce());
-        $this->assertTrue($config->getMagentoForceByPackageName('some/package'));
+        $config = new ProjectConfig(['force-install' => ['lol']]);
+        $this->assertFalse($config->getForceInstall());
+        $this->assertFalse($config->getForceInstallByPackageName('some/package'));
     }
 
-    public function testGetMagentoDeployIgnore()
+    public function testGetInstallIgnores()
     {
-        $config = new ProjectConfig(['magento-deploy-ignore' => [1]], []);
-        $this->assertSame([1], $config->getMagentoDeployIgnore());
-        $config = new ProjectConfig([], []);
-        $this->assertSame([], $config->getMagentoDeployIgnore());
+        $config = new ProjectConfig(['install-ignores' => [1]]);
+        $this->assertSame([1], $config->getInstallIgnores());
+        $config = new ProjectConfig([]);
+        $this->assertSame([], $config->getInstallIgnores());
     }
 
     public function testGetDeployStrategy()
     {
-        $config = new ProjectConfig(['magento-deploystrategy' => 'symlink'], []);
-        $this->assertSame('symlink', $config->getDeployStrategy());
+        $config = new ProjectConfig(['install-strategy' => 'symlink']);
+        $this->assertSame('symlink', $config->getInstallStrategy());
 
-        $config = new ProjectConfig(['magento-deploystrategy' => ' symlink   '], []);
-        $this->assertSame('symlink', $config->getDeployStrategy());
+        $config = new ProjectConfig(['install-strategy' => ' symlink   ']);
+        $this->assertSame('symlink', $config->getInstallStrategy());
     }
 
     public function testGetMagentoRootDir()
     {
-        $config = new ProjectConfig(['magento-root-dir' => '/htdocs'], []);
+        $config = new ProjectConfig(['magento-root-dir' => '/htdocs']);
         $this->assertSame('/htdocs', $config->getMagentoRootDir(false));
 
-        $config = new ProjectConfig(['magento-root-dir' => 'htdocs'], []);
+        $config = new ProjectConfig(['magento-root-dir' => 'htdocs']);
         $this->assertSame('htdocs', $config->getMagentoRootDir(false));
 
-        $config = new ProjectConfig([], []);
+        $config = new ProjectConfig([]);
         $this->assertSame('htdocs', $config->getMagentoRootDir(false));
     }
 
     public function testGetInstalledModuleRepositoryFile()
     {
-        $config = new ProjectConfig(['magento-root-dir' => '/htdocs/'], ['vendor-dir' => 'vendor']);
+        $config = new ProjectConfig(['magento-root-dir' => '/htdocs/', 'vendor-dir' => 'vendor']);
         $this->assertSame('vendor/magento-installed.json', $config->getModuleRepositoryLocation());
 
-        $config = new ProjectConfig(['module-repository-location' => 'htdocs'], ['vendor-dir']);
+        $config = new ProjectConfig(['module-repository-location' => 'htdocs', 'vendor-dir' => 'vendor']);
         $this->assertSame('htdocs/magento-installed.json', $config->getModuleRepositoryLocation());
     }
 }

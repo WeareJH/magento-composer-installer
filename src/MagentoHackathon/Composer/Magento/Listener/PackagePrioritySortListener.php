@@ -43,7 +43,7 @@ class PackagePrioritySortListener
     public function __invoke(InstallEvent $event)
     {
         $packagesToInstall  = $event->getPackages();
-        $userPriorities     = $this->config->getSortPriorities();
+        $userPriorities     = $this->config->getInstallPriorities();
         $priorities         = [];
         foreach ($packagesToInstall as $package) {
             /** @var PackageInterface $package */

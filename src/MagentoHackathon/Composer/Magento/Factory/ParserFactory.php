@@ -37,7 +37,7 @@ class ParserFactory implements ParserFactoryInterface
      */
     public function make(PackageInterface $package, $sourceDir)
     {
-        $moduleSpecificMap = $this->config->getMagentoMapOverwrite();
+        $moduleSpecificMap = $this->config->getMapOverwrites();
         if (isset($moduleSpecificMap[$package->getName()])) {
             $map = $moduleSpecificMap[$package->getName()];
             return new MapParser($map);
