@@ -1,0 +1,153 @@
+<?php
+
+namespace Jh\MagentoComposerInstallerTest;
+
+use Composer\Package\Package;
+use Jh\MagentoComposerInstaller\Event\EventManager;
+use Jh\MagentoComposerInstaller\Factory\InstallStrategyFactory;
+use Jh\MagentoComposerInstaller\InstalledPackage;
+use Jh\MagentoComposerInstaller\InstalledPackageDumper;
+use Jh\MagentoComposerInstaller\Map\MapCollection;
+use Jh\MagentoComposerInstaller\ModuleManager;
+use Jh\MagentoComposerInstaller\ProjectConfig;
+use Jh\MagentoComposerInstaller\Repository\InstalledPackageFileSystemRepository;
+use org\bovigo\vfs\vfsStream;
+
+/**
+ * Class ModuleManagerTest
+ * @package Jh\MagentoComposerInstaller\Magento
+ * @author  Aydin Hassan <aydin@hotmail.co.uk>
+ */
+class ModuleManagerTest extends \PHPUnit_Framework_TestCase
+{
+    protected $moduleManager;
+    protected $installedPackageRepository;
+    protected $unInstallStrategy;
+    protected $installer;
+
+    public function setUp()
+    {
+        vfsStream::setup('root');
+        $this->installedPackageRepository = new InstalledPackageFileSystemRepository(
+            vfsStream::url('root/installed.json'),
+            new InstalledPackageDumper()
+        );
+
+        $config = new ProjectConfig([], ['vendor-dir' => 'vendor']);
+        $this->unInstallStrategy =
+            $this->getMock('Jh\MagentoComposerInstaller\UnInstallStrategy\UnInstallStrategyInterface');
+
+        $this->installer = $this->getMock('Jh\MagentoComposerInstaller\Installer\InstallerInterface');
+        $this->moduleManager = new ModuleManager(
+            $this->installedPackageRepository,
+            new EventManager,
+            $config,
+            $this->unInstallStrategy,
+            $this->installer,
+            new InstallStrategyFactory($config)
+        );
+    }
+
+    public function testPackagesRemovedFromComposerAreMarkedForUninstall()
+    {
+        $composerInstalledPackages = [
+            new Package("vendor/package1", "1.0.0", "vendor/package1")
+        ];
+
+        $installedMagentoPackages = [
+            new InstalledPackage("vendor/package1", "1.0.0", new MapCollection([])),
+            new InstalledPackage("vendor/package2", "1.0.0", new MapCollection([])),
+        ];
+
+        $this->installedPackageRepository->add($installedMagentoPackages[0]);
+        $this->installedPackageRepository->add($installedMagentoPackages[1]);
+
+        $this->unInstallStrategy
+            ->expects($this->once())
+            ->method('unInstall')
+            ->with($installedMagentoPackages[1]->getMappings());
+
+        $this->moduleManager->updateInstalledPackages($composerInstalledPackages);
+    }
+
+    public function testPackagesNotInstalledAreMarkedForInstall()
+    {
+        $composerInstalledPackages = [
+            new Package("vendor/package1", "1.0.0", "vendor/package1")
+        ];
+
+        $this->installer
+            ->expects($this->once())
+            ->method('install')
+            ->with($composerInstalledPackages[0])
+            ->will($this->returnValue(new MapCollection([])));
+
+        $this->moduleManager->updateInstalledPackages($composerInstalledPackages);
+    }
+
+    public function testUpdatedPackageIsMarkedForUninstallAndReInstall()
+    {
+        $composerInstalledPackages = [
+            new Package("vendor/package1", "1.1.0", "vendor/package1")
+        ];
+
+        $installedMagentoPackages = [
+            new InstalledPackage("vendor/package1", "1.0.0", new MapCollection([])),
+        ];
+
+        $this->installedPackageRepository->add($installedMagentoPackages[0]);
+
+        $this->unInstallStrategy
+            ->expects($this->once())
+            ->method('unInstall')
+            ->with($installedMagentoPackages[0]->getMappings());
+
+        $this->installer
+            ->expects($this->once())
+            ->method('install')
+            ->with($composerInstalledPackages[0])
+            ->will($this->returnValue(new MapCollection([])));
+
+        $this->moduleManager->updateInstalledPackages($composerInstalledPackages);
+    }
+
+    public function testMultipleInstallsAndUnInstalls()
+    {
+        $composerInstalledPackages = [
+            new Package("vendor/package1", "1.1.0", "vendor/package1"),
+            new Package("vendor/package2", "1.1.0", "vendor/package2"),
+        ];
+
+        $installedMagentoPackages = [
+            new InstalledPackage("vendor/package1", "1.0.0", new MapCollection([])),
+            new InstalledPackage("vendor/package2", "1.0.0", new MapCollection([])),
+        ];
+
+        $this->installedPackageRepository->add($installedMagentoPackages[0]);
+        $this->installedPackageRepository->add($installedMagentoPackages[1]);
+
+        $this->unInstallStrategy
+            ->expects($this->at(0))
+            ->method('unInstall')
+            ->with($installedMagentoPackages[0]->getMappings());
+
+        $this->unInstallStrategy
+            ->expects($this->at(1))
+            ->method('unInstall')
+            ->with($installedMagentoPackages[1]->getMappings());
+
+        $this->installer
+            ->expects($this->at(0))
+            ->method('install')
+            ->with($composerInstalledPackages[0])
+            ->will($this->returnValue(new MapCollection([])));
+
+        $this->installer
+            ->expects($this->at(1))
+            ->method('install')
+            ->with($composerInstalledPackages[1])
+            ->will($this->returnValue(new MapCollection([])));
+
+        $this->moduleManager->updateInstalledPackages($composerInstalledPackages);
+    }
+}

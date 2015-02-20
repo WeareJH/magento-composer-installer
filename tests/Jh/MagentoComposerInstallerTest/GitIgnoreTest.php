@@ -1,0 +1,83 @@
+<?php
+
+namespace Jh\MagentoComposerInstallerTest;
+
+use Jh\MagentoComposerInstaller\GitIgnore;
+use org\bovigo\vfs\vfsStream;
+
+/**
+ * Class GitIgnoreTest
+ * @package Jh\MagentoComposerInstaller\Magento
+ * @author  Aydin Hassan <aydin@hotmail.co.uk>
+ */
+class GitIgnoreTest extends \PHPUnit_Framework_TestCase
+{
+    protected $gitIgnoreFile;
+
+    public function setUp()
+    {
+        vfsStream::setup('root');
+        $this->gitIgnoreFile = vfsStream::url('root/.gitignore');
+    }
+
+    public function testIfFileNotExistsItIsCreated()
+    {
+        $gitIgnore = new GitIgnore($this->gitIgnoreFile);
+        $gitIgnore->addEntry("file1");
+        $gitIgnore->write();
+        $this->assertFileExists($this->gitIgnoreFile);
+    }
+
+    public function testIfFileExistsExistingLinesAreLoaded()
+    {
+        $lines = ['line1', 'line2'];
+        file_put_contents($this->gitIgnoreFile, implode("\n", $lines));
+        $gitIgnore = new GitIgnore($this->gitIgnoreFile);
+        $this->assertFileExists($this->gitIgnoreFile);
+        $this->assertSame($lines, $gitIgnore->getEntries());
+    }
+
+    public function testAddEntryDoesNotAddDuplicates()
+    {
+        $gitIgnore = new GitIgnore($this->gitIgnoreFile);
+        $gitIgnore->addEntry("file1.txt");
+        $gitIgnore->addEntry("file1.txt");
+        $this->assertCount(1, $gitIgnore->getEntries());
+    }
+
+    public function testGitIgnoreIsNotWrittenIfNoAdditions()
+    {
+        $lines = ['line1', 'line2'];
+        file_put_contents($this->gitIgnoreFile, implode("\n", $lines));
+        $writeTime = filemtime($this->gitIgnoreFile);
+        $gitIgnore = new GitIgnore($this->gitIgnoreFile);
+        $gitIgnore->write();
+        clearstatcache();
+        $this->assertEquals($writeTime, filemtime($this->gitIgnoreFile));
+    }
+
+    public function testCanRemoveEntry()
+    {
+        $lines = ['line1', 'line2'];
+        file_put_contents($this->gitIgnoreFile, implode("\n", $lines));
+        $gitIgnore = new GitIgnore($this->gitIgnoreFile);
+        $gitIgnore->removeEntry('line1');
+        $this->assertEquals(['line2'], $gitIgnore->getEntries());
+    }
+
+    public function testCanAddMultipleEntries()
+    {
+        $gitIgnore = new GitIgnore($this->gitIgnoreFile);
+        $gitIgnore->addMultipleEntries(['file1.txt', 'file2.txt']);
+        $this->assertSame(['file1.txt', 'file2.txt'], $gitIgnore->getEntries());
+    }
+
+    public function testCanRemoveMultipleEntries()
+    {
+        $lines = ['line1', 'line2'];
+        file_put_contents($this->gitIgnoreFile, implode("\n", $lines));
+        $gitIgnore = new GitIgnore($this->gitIgnoreFile);
+        $gitIgnore->removeMultipleEntries(['line1', 'line2']);
+        $this->assertSame([], $gitIgnore->getEntries());
+    }
+}
