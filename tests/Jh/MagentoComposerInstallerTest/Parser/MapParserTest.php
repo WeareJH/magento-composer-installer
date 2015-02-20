@@ -11,9 +11,6 @@ use Jh\MagentoComposerInstaller\Parser\MapParser;
 class MapParserTest extends \PHPUnit_Framework_TestCase
 {
 
-    /**
-     * @covers MagentoHackathon\Composer\Magento\Parser\MapParser::getMappings
-     */
     public function testGetMappings()
     {
         $expected = [
