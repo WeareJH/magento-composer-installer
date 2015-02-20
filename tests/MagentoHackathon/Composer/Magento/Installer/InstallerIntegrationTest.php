@@ -74,7 +74,7 @@ class InstallerIntegrationTest extends PHPUnit_Framework_TestCase
         $this->unzipPackage($sourcePath);
 
         $package    = $this->loadPackage($sourcePath, $version);
-        $extra      = ['magento-root-dir' => $this->projectLocation, 'magento-deploystrategy' => 'symlink'];
+        $extra      = ['magento-root-dir' => $this->projectLocation, 'install-strategy' => 'symlink'];
         $config     = new ProjectConfig($extra, []);
         $installer  = $this->factory->make($config, new EventManager);
         $installer->install($package, $sourcePath);
@@ -183,8 +183,8 @@ class InstallerIntegrationTest extends PHPUnit_Framework_TestCase
         $this->unzipPackage($sourcePath);
 
         $package    = $this->loadPackage($sourcePath, $version);
-        $extra      = ['magento-root-dir' => $this->projectLocation, 'magento-deploystrategy' => 'copy'];
-        $config     = new ProjectConfig($extra, []);
+        $extra      = ['magento-root-dir' => $this->projectLocation, 'install-strategy' => 'copy'];
+        $config     = new ProjectConfig($extra);
         $installer  = $this->factory->make($config, new EventManager);
         $installer->install($package, $sourcePath);
 
@@ -492,8 +492,8 @@ class InstallerIntegrationTest extends PHPUnit_Framework_TestCase
         $this->unzipPackage($sourcePath);
 
         $package    = $this->loadPackage($sourcePath, $version);
-        $extra      = ['magento-root-dir' => $this->projectLocation, 'magento-deploystrategy' => 'copy'];
-        $config     = new ProjectConfig($extra, []);
+        $extra      = ['magento-root-dir' => $this->projectLocation, 'install-strategy' => 'copy'];
+        $config     = new ProjectConfig($extra);
         $installer  = $this->factory->make($config, new EventManager);
         $installer->install($package, $sourcePath);
 

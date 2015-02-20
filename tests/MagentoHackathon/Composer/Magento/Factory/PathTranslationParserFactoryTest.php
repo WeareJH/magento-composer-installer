@@ -20,8 +20,8 @@ class PathTranslationParserFactoryTest extends \PHPUnit_Framework_TestCase
 
         $package = new Package('module-package', '1.0.0', 'module-package');
 
-        $extra = ['path-mapping-translations' => []];
-        $config = new ProjectConfig($extra, []);
+        $extra = ['path-mapping-translations' => ['module-package' => []]];
+        $config = new ProjectConfig($extra);
 
         $mockParserFactory = $this->getMock('MagentoHackathon\Composer\Magento\Factory\ParserFactoryInterface');
         $mockParserFactory

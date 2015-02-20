@@ -21,7 +21,7 @@ class InstallStrategyFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCorrectDeployStrategyIsReturned($strategy, $expectedClass)
     {
         $package = new Package("some/package", "1.0.0", "some/package");
-        $config = new ProjectConfig(['magento-deploystrategy' => $strategy,], []);
+        $config = new ProjectConfig(['install-strategy' => $strategy,]);
         $factory = new InstallStrategyFactory($config);
         $instance = $factory->make($package);
         $this->assertInstanceOf($expectedClass, $instance);
@@ -54,9 +54,9 @@ class InstallStrategyFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $package = new Package("some/package", "1.0.0", "some/package");
         $config = new ProjectConfig([
-            'magento-deploystrategy' => 'symlink',
-            'magento-deploystrategy-overwrite' => ['some/package' => 'none'],
-        ], []);
+            'install-strategy' => 'symlink',
+            'install-strategy-overwrites' => ['some/package' => 'none'],
+        ]);
 
         $factory = new InstallStrategyFactory($config);
 
@@ -71,7 +71,7 @@ class InstallStrategyFactoryTest extends \PHPUnit_Framework_TestCase
     public function testDetermineStrategy($strategy)
     {
         $package = new Package("some/package", "1.0.0", "some/package");
-        $config = new ProjectConfig(['magento-deploystrategy' => $strategy,], []);
+        $config = new ProjectConfig(['install-strategy' => $strategy,]);
         $factory = new InstallStrategyFactory($config);
         $name = $factory->determineStrategy($package);
         $this->assertSame($strategy, $name);
@@ -84,7 +84,7 @@ class InstallStrategyFactoryTest extends \PHPUnit_Framework_TestCase
     public function testDefaultPriorities($strategy, $priority)
     {
         $package = new Package("some/package", "1.0.0", "some/package");
-        $config = new ProjectConfig(['magento-deploystrategy' => $strategy,], []);
+        $config = new ProjectConfig(['install-strategy' => $strategy]);
         $factory = new InstallStrategyFactory($config);
         $this->assertSame($priority, $factory->getDefaultPriority($package));
     }

@@ -23,9 +23,7 @@ class ParserFactoryTest extends \PHPUnit_Framework_TestCase
     public function testMapParserIsReturnedIfMapOverwriteFound()
     {
         $package = new Package('module-package', '1.0.0', 'module-package');
-        $config = new ProjectConfig([
-            'magento-map-overwrite' => ['module-package' => []]
-        ], []);
+        $config = new ProjectConfig(['map-overwrites' => ['module-package' => []]]);
         $factory = new ParserFactory($config);
         $instance = $factory->make($package, vfsStream::url('root'));
         $this->assertInstanceOf('MagentoHackathon\Composer\Magento\Parser\MapParser', $instance);

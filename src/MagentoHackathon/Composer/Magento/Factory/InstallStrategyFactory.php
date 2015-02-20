@@ -3,7 +3,6 @@
 namespace MagentoHackathon\Composer\Magento\Factory;
 
 use Composer\Package\PackageInterface;
-use MagentoHackathon\Composer\Magento\Deploystrategy\DeploystrategyAbstract;
 use MagentoHackathon\Composer\Magento\InstallStrategy\InstallStrategyInterface;
 use MagentoHackathon\Composer\Magento\ProjectConfig;
 use MagentoHackathon\Composer\Magento\Util\FileSystem;
@@ -80,9 +79,9 @@ class InstallStrategyFactory
      */
     public function determineStrategy(PackageInterface $package)
     {
-        $strategyName = $this->config->getDeployStrategy();
-        if ($this->config->hasDeployStrategyOverwrite()) {
-            $moduleSpecificDeployStrategies = $this->config->getDeployStrategyOverwrite();
+        $strategyName = $this->config->getInstallStrategy();
+        if ($this->config->hasInstallStrategyOverwrites()) {
+            $moduleSpecificDeployStrategies = $this->config->getInstallStrategyOverwrites();
 
             if (isset($moduleSpecificDeployStrategies[$package->getName()])) {
                 $strategyName = $moduleSpecificDeployStrategies[$package->getName()];
