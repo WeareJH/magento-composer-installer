@@ -1,5 +1,9 @@
-# Magento Composer Installer 
-[![Build Status](https://img.shields.io/travis/AydinHassan/magento-module-composer-installer.svg?style=flat-square)](https://travis-ci.org/AydinHassan/magento-module-composer-installer) [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/AydinHassan/magento-module-composer-installer.svg?style=flat-square)](https://scrutinizer-ci.com/g/AydinHassan/magento-module-composer-installer/?branch=master) [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/AydinHassan/magento-module-composer-installer.svg?style=flat-square)](https://scrutinizer-ci.com/g/AydinHassan/magento-module-composer-installer/?branch=master)
+# Magento Composer Installer
+[![AppVeyor Build Status](https://img.shields.io/appveyor/ci/AydinHassan/magento-composer-installer/master.svg?style=flat-square&label=windows)](https://ci.appveyor.com/project/AydinHassan/magento-composer-installer)
+[![Travis Build Status](https://img.shields.io/travis/AydinHassan/magento-module-composer-installer.svg?style=flat-square&label=linux)](https://travis-ci.org/AydinHassan/magento-module-composer-installer) [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/WeareJH/magento-composer-installer.svg?style=flat-square)](https://scrutinizer-ci.com/g/WeareJH/magento-composer-installer/?branch=master) [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/WeareJH/magento-composer-installer.svg?style=flat-square)](https://scrutinizer-ci.com/g/WeareJH/magento-composer-installer/?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/magento-composer-installer/badge/?version=master)](https://readthedocs.org/projects/magento-composer-installer/?badge=master)
+
+
 
 > Manage your dependencies with Composer in your Magento project
 
