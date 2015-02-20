@@ -1,19 +1,16 @@
-Make a module installable with composer
-=======================================
+# Make a module installable with composer
 
-
-To make a Magento module installable with composer, this is how to set up the ```composer.json``` for your extension:
+To make a Magento module installable with composer, this is how to set up the `composer.json` for your extension:
 
 ```json
 {
     "name": "your-vendor-name/module-name",
     "type": "magento-module",
-    "license":"OSL-3.0",
-    "description":"A short one line description of your module",
-    "authors":[
+    "description": "A short one line description of your module",
+    "authors": [
         {
-            "name":"Author Name",
-            "email":"author@example.com"
+            "name": "Author Name",
+            "email": "author@example.com"
         }
     ]
 }
@@ -25,7 +22,7 @@ https://github.com/magento-hackathon/composer-repository, add your module to the
 open a pull request.
 
 If you want to install your module without publishing it on http://packages.firegento.com/, you can add your repository
-to your projects composer.json directly and it will install, too.
+to your projects `composer.json` file  directly and it will install, too.
 
 ```json
 {
@@ -41,5 +38,3 @@ to your projects composer.json directly and it will install, too.
 ```
 More information can be found at
 http://getcomposer.org/doc/05-repositories.md#vcs
-
-

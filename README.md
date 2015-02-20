@@ -1,11 +1,9 @@
-[![Build Status](https://travis-ci.org/AydinHassan/magento-module-composer-installer.svg?branch=master)](https://travis-ci.org/AydinHassan/magento-module-composer-installer)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/AydinHassan/magento-module-composer-installer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/AydinHassan/magento-module-composer-installer/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/AydinHassan/magento-module-composer-installer/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/AydinHassan/magento-module-composer-installer/?branch=master)
+# Magento Composer Installer 
+[![Build Status](https://img.shields.io/travis/AydinHassan/magento-module-composer-installer.svg?style=flat-square)](https://travis-ci.org/AydinHassan/magento-module-composer-installer) [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/AydinHassan/magento-module-composer-installer.svg?style=flat-square)](https://scrutinizer-ci.com/g/AydinHassan/magento-module-composer-installer/?branch=master) [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/AydinHassan/magento-module-composer-installer.svg?style=flat-square)](https://scrutinizer-ci.com/g/AydinHassan/magento-module-composer-installer/?branch=master)
 
-# Magento Composer Installer
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/magento-hackathon/magento-composer-installer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+> Manage your dependencies with Composer in your Magento project
 
-<img src="https://getcomposer.org/img/logo-composer-transparent.png" itemprop="image" alt="Dart Mosaic" style="height:50px;">
+<a href="http://www.wearejh.com"><img src="http://cl.ly/image/3Y3O0M2z310j/jh-100-red.png" /></a>
 
 The purpose of this project is to 
 enable [composer](https://github.com/composer/composer) to install Magento modules,
@@ -15,306 +13,127 @@ We strongly recommend you to also read the general composer documentations on [g
 
 Also you should see [Using composer correctly (confoo) by Igor Wiedler](https://speakerdeck.com/igorw/using-composer-correctly-confoo)
 
- 
+This project is a fork of [Magento Composer Installer](https://github.com/magento-hackathon/magento-composer-installer), so thanks to all the hard work from the following contributors: 
+
+* Daniel Fahlke aka Flyingmana
+* Jörg Weller
+* Karl Spies
+* Tobias Vogt
+* David Fuhr
+* Amir Tchavoshinia
+* Vinai Kopp
+
+## Reason for Fork
+The project was forked as we wanted to re-write the majority of the code to aid in debugging, and simplify some of the features
+that were added overtime. There also many features that were deemed out-of-scope for the tool. I believe a more concise and stable
+project will help adoption of composer in the Magento community.
+
+Also a major aim for the project is to provide sane defaults to allow the installer to work efficiently with as little configuration as 
+possible. 
+
+Improvements over the original project (at the time of the fork) include the following:
+
+* Automatic Git Ignore management (Installed modules will be added to the `gitignore` file in the Magento root directory and removed when the module is un-installed)
+* When updating modules all old files are removed from the Magento root
+* All installed module files and versions are tracked (`vendor/magento-installed.json`), so if you need to re-deploy, just delete that files and run `composer update`
+
 ## Project Details
  
 This project only covers the custom installer for composer. If you have problems with outdated versions,
-need to install magento connect modules or similar, you need to look for [packages.firegento.com](http://packages.firegento.com/)
+need to install magento connect modules or similar, you need to look for 
  
- 
-### support contacts
- 
-If you have problems please have patience, as normal support is done during free time.  
-If you are willing to pay to get your problem fixed, communicate this from the start to get faster responses.
- 
- 
-If you need consulting, support, training or help regarding Magento and Composer,
-you have the chance to hire one of the following people/companies.
- 
-* Daniel Fahlke aka Flyingmana (Maintainer): flyingmana@googlemail.com [@Flyingmana](https://twitter.com/Flyingmana)
-* brandung - Magento Team: magento-team@brandung.de (http://brandung.de)
-* Your Name here
-* Your Name here
-* Your Company Name here
-* Your Company Name here
- 
-other support contacts
- 
-* irc: freenode the channels #magento-composer #magento-reddit and for german speaking people #magento-de 
-* twitter: [@firegento](https://twitter.com/firegento)
+## Documentation
 
-## Known issue
-- Error message: `Fatal error: Call to undefined method MagentoHackathon\Composer\Magento\Installer::setDeployManager()` happens when you update from 1.x to 2.x, as we switched from pure installer to plugin.
+Documentation can be found on [Read the Docs](http://magento-composer-installer.readthedocs.org/en/latest/), the docs are built automatically when pushing to
+the master branch of this repository. They are built from the `docs` folder.
 
-Solution: remove the `vendor` directory and the `composer.lock` and do a fresh install.
-=======
-## Known issues
+## Packages
+You can search for Magento module packages on [packages.firegento.com](http://packages.firegento.com/)
 
-### When upgrading from 1.x to 2.x 
+You can also use any vcs repository you have access to which has a `composer.json` file in it. See [Composer Docs](https://getcomposer.org/doc/05-repositories.md#vcs) for more information. 
 
-The update from 1.x to 2.x has to be done with no plugins as otherwise a fatal error will be triggered (which does not hurt, just run the update again and it runs through).
+## Quick Setup
 
-- Error message: `Fatal error: Call to undefined method MagentoHackathon\Composer\Magento\Installer::setDeployManager()` 
-
-To prevent this error, upgrade only *magento-composer-installer* first:
-
-```composer update --no-plugins --no-dev "magento-hackathon/magento-composer-installer"``` 
-
-Fallback Solutions:
-
-1. execute `composer install` two times.
-2. remove the `vendor` directory and `composer.lock` and do a fresh install.
-
-### Timeouts and slow downloading. 
-
-Mostly caused by outtages of Github, Repositories or the Internet. This is a common problem with having all 
-packges remote.
-
-For all of this Issues you can make use of the commercial [Toran Proxy](https://toranproxy.com/).
-It also allows hosting of private packages and speeds up the whole downloading process.
-
-Another alternative is to look into [Satis](https://github.com/composer/satis), bare git mirrors and repository aliasing.
-
-Another way to speedup downloads over ssh(also interesting for satis users) is to improve your ssh configs.
-At least for newer versions of openSSH you can add the following to your ```.ssh/config``` to reuse previous connections.
-```
-Host * 
-    ControlPath ~/.ssh/controlmasters/%r@%h:%p
-    ControlMaster auto
-    ControlPersist 10m
-```
-
-also you need to create the ```controlmasters``` directory:
-```sh
-mkdir ~/.ssh/controlmasters
-chmod go-xr ~/.ssh/controlmasters
-```
-
-further information can be found on [wikibooks](http://en.wikibooks.org/wiki/OpenSSH/Cookbook/Multiplexing) 
-
-## Usage
-
-See below for a [generic instruction on how to install composer](#installation-of-composer) if you aren't familiar with it.
+We will assume you already have `Composer` installed and are aware of the project. If not, go to https://getcomposer.org/ 
+and read the documentation!
 
 
 ### Install a module in your project
 
-If you want to use [the public Magento module repository](http://packages.firegento.com),
-set up your root ```composer.json``` in your project like this:
+Require the installer:
+
+```
+$ cd project
+$ composer require wearejh/magento-composer-installer
+```
+
+
+If you want to use the public Magento module [repository](http://packages.firegento.com),
+add the repository to your `composer.json` like so
 
 ```json
 {
-    "require": {
-        "your-vendor-name/module-name": "*",
-        "magento-hackathon/magento-composer-installer": "*"
-    },
+    ...
     "repositories": [
         {
             "type": "composer",
             "url": "http://packages.firegento.com"
         }
     ],
-    "extra":{
-        "magento-root-dir": "htdocs/"
-    }
+    ...
 }
 ```
 
-If you want to use a github/git/svn/etc repository, 
-set up your root ```composer.json``` in your project like this:
+If you want to use a github/git/svn/etc repository that is not available on [Packagist](https://packagist.org/) or [Firegento](http://packages.firegento.com/), add it to your `composer.json` like so
 
 ```json
 {
-    "require": {
-        "magento-hackathon/magento-composer-installer":"*",
-        "the-vendor-name/the-module-name": "*"
-    },
+    ...
     "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/magento-hackathon/magento-composer-installer"
-        },
         {
             "type": "vcs",
             "url": "the/github/or/git/or/svn/etc/repository/uri-of-the-module"
         }
     ],
-    "extra":{
-        "magento-root-dir": "htdocs/"
-    }
-}
-```
-Notes:
-
-1. More information about VCS repositories can be found 
-   at [getcomposer.org](http://getcomposer.org/doc/05-repositories.md#vcs)
-
-
-
-### Change the Vendor/Name of your Module
-
-sometimes it will happen, that you change the name or the vendor of a package.
-For example you developed a module in your own namespace and later moved it to an organization, or you moved it
-from one to another organization.
-In this cases you should change your ```composer.json``` a bit to make it for users easier.
-Look for the ```replace``` statement
-
-
-```json
-{
-    "name": "your-new-vendor-name/module-name",
-    "type": "magento-module",
-    "license":"OSL-3.0",
-    "description":"A short one line description of your module",
-    "authors":[
-        {
-            "name":"Author Name",
-            "email":"author@example.com"
-        }
-    ],
-    "replace": {
-        "your-vendor-name/module-name":"*"
-    }
-}
-```
-
-
-
-### Auto add files to .gitignore
-
-If you want to have the deployed files automatically added to your .gitignore file, then you can just set the `auto-append-gitignore` key to true:
-
-```json
-{
-    ...
-    "extra":{
-        "magento-root-dir": "htdocs/",
-        "auto-append-gitignore": true
-    }
     ...
 }
 ```
 
-The `.gitignore` file will be loaded from the current directory, and if it does not exist, it will be created. Every set of module files, will have a comment above them
-describing the module name for clarity.
-
-Multiple deploys will not add additional lines to your .gitignore, they will only ever be added once.
- 
-
-### Testing
-
-First clone the magento-composer-installer, then install the dev-stuff:
+Require a Magento module in your project and watch it install to the correct location
 
 ```
-./bin/composer.phar install --dev
+$ cd project
+$ composer require "aoepeople/Aoe_Scheduler:0.4.3"
 ```
 
-then run ```vendor/bin/phpunit``` in project-root directory.
+You should see the following structure
 
-Note: Windows users please run ```phpunit``` with Administrator permissions.
+[![Structure](http://ss.jhf.tw/99TcvMyg4X.png)]
 
 
-### How to overwrite dependencies
+##Contributing
 
-We don't want to use always the official repositories for specific dependencies.
-For example for development purpose or use versions with custom patches.
+All contributions will require unit-tests. This is in order to keep the project stable and stop regressions.
+Don't hesitate to ask for help if you don't know how to write unit tests!
 
-For this case you have the _repositories_ section inside your project composer.json
-Here you can define own package composer.json for specific dependencies by the package name.
-
-This example shows how to use a local git projects local-master branch which even works without a composer.json inside
-and a project in VCS with existing composer.json, which is not yet on packagist.
-
-```json
-{
-   ...
-   "repositories": [
-       {
-          "type": "package",
-          "package": {
-             "name": "magento-hackathon/magento-composer-installer",
-             "version": "dev-master",
-             "type": "composer-installer",
-             "source": {
-                "type": "git",
-                "url": "/public_projects/magento/magento-composer-installer/",
-                "reference": "local-master"
-             },
-             "autoload": {
-                "psr-0": {"MagentoHackathon\\Composer\\Magento": "src/"}
-             },
-             "extra": {
-                "class": "\\MagentoHackathon\\Composer\\Magento\\Installer"
-             }
-          }
-       }
-    ]
-}
-```
-
-## Installation of composer
-
-### 1. Install PHP-Composer
-
-#### On Linux/Mac
-
-Go to your project root directory and run:
+### Running the Unit Tests
 
 ```
-mkdir bin
-curl -s https://getcomposer.org/installer | php -- --install-dir=bin
+$ git clone git@github.com:WeareJH/magento-composer-installer.git
+$ cd magento-composer-installer
+$ composer install
+$ vendor/bin/phpunit
 ```
 
-#### On Windows
-Please take a look at http://getcomposer.org/doc/00-intro.md#installation-windows
+### Check coding style
 
-Creation of symbolic links requires the SeCreateSymbolicLinkPrivilege (“Create symbolic links”), which is granted only
-to administrators by default (but you can change that using security policy).
-
-To change the policies:
-- Launch secpol.msc via Start or Start → Run.
-- Open Security Settings → Local Policies → User Rights Assignment.
-- In the list, find the "Create symbolic links" item, which represents SeCreateSymbolicLinkPrivilege.
-    Double-click on the item and add yourself (or the whole Users group) to the list.
-
-(Seen at http://superuser.com/questions/124679/how-do-i-create-an-mklink-in-windows-7-home-premium-as-a-regular-user#125981)
-
-
-### 2. Download composer.json template
-
-See [Usage](#usage).
-
-
-### 3. Install Magento modules via composer
+This project use PSR2 as the coding style. So if you plan onm contributing please run
+the checks before you propose a PR.
 
 ```
-php bin/composer.phar install
+$ git clone git@github.com:WeareJH/magento-composer-installer.git
+$ cd magento-composer-installer
+$ composer install
+$ vendor/bin/phpcs --standard=PSR2 src
+$ vendor/bin/phpcs --standard=PSR2 tests/Jh
 ```
-
-
-
-
-
-## Further Information
-
-* [FAQ](doc/FAQ.md)
-* [Make a Magento module installable with composer](doc/MakeAModuleInstallableWithComposer.md)
-* [About File Mapping like for example modman](doc/Mapping.md)
-* [About Deploying files into your Magento root and possible configs](doc/Deploy.md)
-
-### External Links
-
-* [Composer How to Screencast](http://www.youtube.com/watch?v=m_yprtQiFgk)
-* [Introducing Composer Blog on Magebase.com](http://magebase.com/magento-tutorials/composer-with-magento/)
-* [Magento, Composer and Symfonys Dependency Injection](http://www.piotrbelina.com/magento-composer-and-dependency-injection/)
-* [Using Composer for Magento(at engineyard)](https://blog.engineyard.com/2014/composer-for-magento)
-
-### Core Contributors
-
-* Daniel Fahlke aka Flyingmana (Maintainer)
-* Jörg Weller
-* Karl Spies
-* Tobias Vogt
-* David Fuhr
-* Amir Tchavoshinia
-* Vinai Kopp (Maintainer)

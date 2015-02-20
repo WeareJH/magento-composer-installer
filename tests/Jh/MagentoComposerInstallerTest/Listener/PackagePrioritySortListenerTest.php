@@ -49,12 +49,11 @@ class PackagePrioritySortListenerTest extends PHPUnit_Framework_TestCase
 
         $config = new ProjectConfig(
             [
-                'magento-deploystrategy-overwrite' => [
+                'install-strategy-overwrites' => [
                     'vendor/package1' => 'symlink',
                     'vendor/package2' => 'copy',
                 ],
-            ],
-            []
+            ]
         );
         $installStrategyFactory = new InstallStrategyFactory($config);
 
@@ -80,13 +79,12 @@ class PackagePrioritySortListenerTest extends PHPUnit_Framework_TestCase
 
         $config = new ProjectConfig(
             [
-                'magento-deploy-sort-priority' => [
+                'install-priorities' => [
                     'vendor/package1' => 200,
                     'vendor/package2' => 400,
                     'vendor/package3' => 1000,
                 ],
-            ],
-            []
+            ]
         );
         $installStrategyFactory = new InstallStrategyFactory($config);
 
