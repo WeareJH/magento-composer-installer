@@ -4,7 +4,7 @@ namespace Jh\MagentoComposerInstaller\UnInstallStrategy;
 
 use Jh\MagentoComposerInstaller\Map\Map;
 use Jh\MagentoComposerInstaller\Map\MapCollection;
-use Jh\MagentoComposerInstaller\Util\Filesystem;
+use Jh\MagentoComposerInstaller\Util\FileSystem ;
 
 /**
  * Class UnInstallStrategy
