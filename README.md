@@ -112,7 +112,7 @@ $ composer require "aoepeople/Aoe_Scheduler:0.4.3"
 
 You should see the following structure
 
-[![Structure](http://ss.jhf.tw/99TcvMyg4X.png)]
+![Structure](http://ss.jhf.tw/99TcvMyg4X.png)
 
 
 ##Contributing
