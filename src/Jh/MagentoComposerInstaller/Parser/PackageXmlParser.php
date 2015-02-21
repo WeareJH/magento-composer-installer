@@ -29,6 +29,12 @@ class PackageXmlParser implements ParserInterface
     public function __construct($packageXmlFile)
     {
         $this->file = new \SplFileObject($packageXmlFile);
+        
+        $targets = simplexml_load_file(__DIR__ . '/../../../../res/target.xml');
+        foreach ($targets as $target) {
+            $attributes = $target->attributes();
+            $this->targets["{$attributes->name}"] = "{$attributes->uri}";
+        }
     }
 
     /**
@@ -96,13 +102,6 @@ class PackageXmlParser implements ParserInterface
      */
     protected function getTargetsDefinitions()
     {
-        if (!$this->targets) {
-            $targets = simplexml_load_file(__DIR__ . '/../../../../res/target.xml');
-            foreach ($targets as $target) {
-                $attributes = $target->attributes();
-                $this->targets["{$attributes->name}"] = "{$attributes->uri}";
-            }
-        }
         return $this->targets;
     }
 
